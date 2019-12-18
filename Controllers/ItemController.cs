@@ -1,9 +1,9 @@
 // DONE GET all items
 // DONE POST add an item
 // DONE GET each item (id)
+// DONE PUT update an item
+// DONE DELEtE delete an item
 
-// TODO PUT update an item
-// TODO DELEtE delete an item
 // TODO GET all items that are out of stock
 // TODO GET items based on SKU
 
@@ -48,6 +48,43 @@ namespace InventoryAllTheThings.Controllers
       db.SaveChanges();
       return Ok(item);
     }
-  }
 
+    [HttpPut("{id}")]
+    public ActionResult UpdateItem(int id, Item item)
+    {
+      var db = new DatabaseContext();
+      var prevItem = db.Items.FirstOrDefault(i => i.Id == id);
+      if (prevItem == null)
+      {
+        return NotFound();
+      }
+      else
+      {
+        prevItem.SKU = item.SKU;
+        prevItem.Name = item.Name;
+        prevItem.ShortDescription = item.ShortDescription;
+        prevItem.NumberInStock = item.NumberInStock;
+        prevItem.Price = item.Price;
+        prevItem.DateOrdered = item.DateOrdered;
+        db.SaveChanges();
+        return Ok(prevItem);
+      }
+    }
+    [HttpDelete("{id}")]
+    public ActionResult DeleteItem(int id)
+    {
+      var db = new DatabaseContext();
+      var item = db.Items.FirstOrDefault(i => i.Id == id);
+      if (item == null)
+      {
+        return NotFound();
+      }
+      else
+      {
+        db.Items.Remove(item);
+        db.SaveChanges();
+        return Ok();
+      }
+    }
+  }
 }
