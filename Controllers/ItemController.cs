@@ -3,9 +3,8 @@
 // DONE GET each item (id)
 // DONE PUT update an item
 // DONE DELEtE delete an item
-
-// TODO GET all items that are out of stock
-// TODO GET items based on SKU
+// DONE GET all items that are out of stock
+// DONE GET items based on SKU
 
 using System;
 using System.Linq;
@@ -85,6 +84,20 @@ namespace InventoryAllTheThings.Controllers
         db.SaveChanges();
         return Ok();
       }
+    }
+    [HttpGet("OutOfStock")]
+    public ActionResult GetOutOfStock()
+    {
+      var db = new DatabaseContext();
+      var outOfStockItems = db.Items.OrderByDescending(i => i.NumberInStock == 0);
+      return Ok(outOfStockItems);
+    }
+    [HttpGet("BySKU")]
+    public ActionResult GetBySKU(int SKU)
+    {
+      var db = new DatabaseContext();
+      var itemBySKU = db.Items.FirstOrDefault(i => i.SKU == SKU);
+      return Ok(itemBySKU);
     }
   }
 }
